@@ -1,6 +1,7 @@
 package com.example.vehicletolling.service;
 
 import com.example.vehicletolling.model.ProcessedVehicle;
+import com.example.vehicletolling.model.VehicleBrand;
 import com.example.vehicletolling.model.VehicleBrandCount;
 import com.example.vehicletolling.repository.ProcessedVehicleRepository;
 import com.example.vehicletolling.repository.VehicleBrandCountRepository;
@@ -36,32 +37,31 @@ public class VehicleProcessingService {
 
     Integer tollStationId = jsonNode.get("tollStationId").asInt();
     String vehicleId = jsonNode.get("vehicleId").asText();
-    String vehicleBrand = jsonNode.get("vehicleBrand").asText();
+    String vehicleBrandStr = jsonNode.get("vehicleBrand").asText();
     Long timestamp = jsonNode.get("timestamp").asLong();
+
+    VehicleBrand vehicleBrand = VehicleBrand.fromString(vehicleBrandStr);
 
     // Convert timestamp to LocalDate
     LocalDate date = Instant.ofEpochMilli(timestamp).atZone(ZoneId.of("UTC")).toLocalDate();
 
     // Check if the vehicle has already been processed for the day
     Optional<ProcessedVehicle> processedOpt = processedVehicleRepository.findByVehicleIdAndDate(vehicleId, date);
-    if (processedOpt.isPresent()) {
-      // Vehicle already counted for the day; do nothing
-      return;
-    }
+    if (processedOpt.isEmpty()) {
+      // Mark vehicle as processed
+      ProcessedVehicle processedVehicle = new ProcessedVehicle(vehicleId, date);
+      processedVehicleRepository.save(processedVehicle);
 
-    // Mark vehicle as processed
-    ProcessedVehicle processedVehicle = new ProcessedVehicle(vehicleId, date);
-    processedVehicleRepository.save(processedVehicle);
-
-    // Update vehicle brand count
-    Optional<VehicleBrandCount> brandCountOpt = vehicleBrandCountRepository.findByVehicleBrandAndDate(vehicleBrand, date);
-    if (brandCountOpt.isPresent()) {
-      VehicleBrandCount brandCount = brandCountOpt.get();
-      brandCount.setCount(brandCount.getCount() + 1);
-      vehicleBrandCountRepository.save(brandCount);
-    } else {
-      VehicleBrandCount brandCount = new VehicleBrandCount(vehicleBrand, 1L, date);
-      vehicleBrandCountRepository.save(brandCount);
+      // Update vehicle brand count
+      Optional<VehicleBrandCount> brandCountOpt = vehicleBrandCountRepository.findByVehicleBrandAndDate(vehicleBrand, date);
+      if (brandCountOpt.isPresent()) {
+        VehicleBrandCount brandCount = brandCountOpt.get();
+        brandCount.setCount(brandCount.getCount() + 1);
+        vehicleBrandCountRepository.save(brandCount);
+      } else {
+        VehicleBrandCount brandCount = new VehicleBrandCount(vehicleBrand, 1L, date);
+        vehicleBrandCountRepository.save(brandCount);
+      }
     }
   }
 }

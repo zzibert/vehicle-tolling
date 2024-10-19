@@ -16,7 +16,7 @@ public class VehicleBrandCount {
   private Long id;
 
   @Column(name="vehicle_brand", nullable = false)
-  private String vehicleBrand;
+  private VehicleBrand vehicleBrand;
 
   @Column(name="count", nullable = false)
   private Long count;
@@ -26,7 +26,7 @@ public class VehicleBrandCount {
 
   public VehicleBrandCount() {}
 
-  public VehicleBrandCount(String vehicleBrand, Long count, LocalDate date) {
+  public VehicleBrandCount(VehicleBrand vehicleBrand, Long count, LocalDate date) {
     this.vehicleBrand = vehicleBrand;
     this.count = count;
     this.date = date;
@@ -36,11 +36,11 @@ public class VehicleBrandCount {
     return id;
   }
 
-  public String getVehicleBrand() {
+  public VehicleBrand getVehicleBrand() {
     return vehicleBrand;
   }
 
-  public void setVehicleBrand(String vehicleBrand) {
+  public void setVehicleBrand(VehicleBrand vehicleBrand) {
     this.vehicleBrand = vehicleBrand;
   }
 
