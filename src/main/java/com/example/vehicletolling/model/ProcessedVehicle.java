@@ -1,6 +1,7 @@
 package com.example.vehicletolling.model;
 
-import javax.persistence.*;
+
+import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity
@@ -13,14 +14,15 @@ public class ProcessedVehicle {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name="vehicle_id", nullable = false)
+  @Column(name = "vehicle_id", nullable = false)
   private String vehicleId;
 
-  @Column(name="date", nullable = false)
+  @Column(name = "date", nullable = false)
   private LocalDate date;
 
   // Constructors
-  public ProcessedVehicle() {}
+  public ProcessedVehicle() {
+  }
 
   public ProcessedVehicle(String vehicleId, LocalDate date) {
     this.vehicleId = vehicleId;
