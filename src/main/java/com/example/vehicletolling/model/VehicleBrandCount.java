@@ -22,7 +22,6 @@ public class VehicleBrandCount {
   @Column(name="date", nullable = false)
   private LocalDate date;
 
-  // Constructors
   public VehicleBrandCount() {}
 
   public VehicleBrandCount(String vehicleBrand, Long count, LocalDate date) {
@@ -31,8 +30,6 @@ public class VehicleBrandCount {
     this.date = date;
   }
 
-  // Getters and Setters
-  // (Alternatively, use Lombok's @Data annotation)
   public Long getId() {
     return id;
   }
